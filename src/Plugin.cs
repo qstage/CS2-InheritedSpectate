@@ -12,7 +12,7 @@ namespace InheritedSpectate;
 public class Plugin : BasePlugin
 {
     public override string ModuleName => "InheritedSpectate";
-    public override string ModuleVersion => "1.0.0";
+    public override string ModuleVersion => "1.0.1";
     public override string ModuleAuthor => "xstage";
     public override string ModuleDescription => "Plugin fixes problem when after changing map, spectators is automatically moved to T/CT team";
 
@@ -34,6 +34,8 @@ public class Plugin : BasePlugin
 
         AddCommandListener("changelevel", CreateWrapper(MapEnd), HookMode.Post);
         AddCommandListener("map", CreateWrapper(MapEnd), HookMode.Post);
+        AddCommandListener("host_workshop_map", CreateWrapper(MapEnd), HookMode.Post);
+        AddCommandListener("ds_workshop_changelevel", CreateWrapper(MapEnd), HookMode.Post);
 
         RegisterEventHandler<EventNextlevelChanged>(MapEnd);
         RegisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect);
@@ -43,10 +45,14 @@ public class Plugin : BasePlugin
     {
         _lastSpectators.Clear();
 
-        foreach (var player in Utilities.GetPlayers().Where(p => p.Team == CsTeam.Spectator).ToArray())
+        try
         {
-            _lastSpectators.Add(player.SteamID);
+            foreach (var player in Utilities.GetPlayers().Where(p => p.Team == CsTeam.Spectator).ToArray())
+            {
+                _lastSpectators.Add(player.SteamID);
+            }
         }
+        catch (Exception) {}
 
         return HookResult.Continue;
     }
