@@ -28,7 +28,7 @@ public class Plugin : BasePlugin
     private readonly MemoryFunctionWithReturn<CCSPlayerController, CsTeam, bool, bool> JoinTeam = new(Plugin.GetSignature<JoinTeamSignature>());
     private readonly List<ulong> _lastSpectators = [];
 
-    public unsafe override void Load(bool hotReload)
+    public override void Load(bool hotReload)
     {
         JoinTeam.Hook(Hook_JoinTeam, HookMode.Pre);
 
